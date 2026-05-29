@@ -46,6 +46,13 @@ std::string Comms::getPublishTopic(std::string plantId)
 void Comms::addTopic(std::string id, std::function<void(std::string)> handler)
 {
   topics.push_back(Topic{id, handler});
+  // TODO: what if not `isMyTurn`?
+  Comms::mqttClient.subscribe(
+      id,
+      [&handler](const std::string &payload)
+      {
+        handler(payload.c_str());
+      });
 }
 
 void onMqttConnect(esp_mqtt_client_handle_t client)
