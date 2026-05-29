@@ -27,8 +27,6 @@ void setup()
   log_i("\nInit comms");
   c.setupWifi();
   c.setupMqtt();
-
-  pinMode(23, OUTPUT);
 }
 
 void loop()

@@ -1,5 +1,4 @@
 #include "SoilMoistureSensor.h"
-#include "../Comms/Comms.h"
 #include "Arduino.h"
 #include <string>
 
@@ -19,6 +18,5 @@ int SoilMoistureSensor::getMoisturePercentage()
 
 void SoilMoistureSensor::publish(char buffer[64])
 {
-  comms.mqttClient.publish(Comms::getPublishTopic(id), buffer,
-                           0, false);
+  comms.mqttClient.publish(Comms::getPublishTopic(id), buffer, 0, false);
 }

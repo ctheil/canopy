@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ESP32MQTTClient.h"
 #include <string>
 
