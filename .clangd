@@ -1,0 +1,23 @@
+CompileFlags:
+  CompilationDatabase: .
+Add:
+  - '-std=c++17'
+#   Remove:
+#     - '-mlongcalls'
+#     - '-fno-tree-switch-conversion'
+#     - '-fstrict-volatile-bitfields'
+#     - '-mfix-esp32-psram-cache-issue'
+#     - '-mfix-esp32-psram-cache-strategy=*'
+#     - '--specs=*'
+#     - '-march=*'
+#     - '-mabi=*'
+#     - '-ferror-limit=0'
+#
+# Diagnostics:
+#   Suppress:
+#     - attribute_section_invalid_for_target
+#     - drv_unknown_argument
+#     - drv_unknown_argument_with_suggestion
+#     - unknown_nested_typename_suggest
+#     - template_instantiate_undefined
+#     - no_member

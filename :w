@@ -1,0 +1,57 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// INCLUDES
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#include "./Comms/Comms.h"
+#include "./SoilMoistureSensor/SoilMoistureSensor.h"
+#include "Arduino.h"
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// GLOBALS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int loopCount = 0;
+int constexpr numSensors = 1;
+SoilMoistureSensor sensors[numSensors] = {SoilMoistureSensor(32, "001")};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// MAIN
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void setup() {
+  Serial.begin(115200);
+
+  log_i();
+  log_i("setup, ESP.getSdkVersion(): ");
+  log_i("%s", ESP.getSdkVersion());
+
+  log_i("\nInit comms");
+  Comms c;
+  c.setupWifi();
+  c.setupMqtt();
+
+  pinMode(23, OUTPUT);
+}
+
+void loop() {
+  // publish ever 30 minutes
+  if (loopCount >= 60 * 30) {
+    // loop over every sensor and publish to its topic id
+    for (int i = 0; i != numSensors; ++i) {
+
+      const int moisturePercentage = sensors[i].getMoisturePercentage();
+      char buffer[64];
+      snprintf(buffer, sizeof(buffer), "{\"soil-moisture\": %d}",
+               moisturePercentage);
+
+      Comms::mqttClient.publish(Comms::getPublishTopic(sensors[i].id), buffer,
+                                0, false);
+      loopCount = 0;
+    }
+  }
+  ++loopCount;
+
+  log_i("pump on");
+  digitalWrite(23, HIGH);
+  delay(1000);
+  log_i("pump off");
+  digitalWrite(23, LOW);
+  delay(1000);
+}
