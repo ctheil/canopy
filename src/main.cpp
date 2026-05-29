@@ -10,8 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int loopCount = 0;
 int constexpr numSensors = 1;
-Comms c;
-SoilMoistureSensor sensors[numSensors] = {SoilMoistureSensor(32, "001", c)};
+SoilMoistureSensor sensors[numSensors] = {SoilMoistureSensor(32, "001")};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// MAIN
@@ -25,6 +24,7 @@ void setup()
   log_i("%s", ESP.getSdkVersion());
 
   log_i("\nInit comms");
+  Comms c;
   c.setupWifi();
   c.setupMqtt();
 }
