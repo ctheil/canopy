@@ -7,8 +7,6 @@ Pump::Pump(const int &pwm_pin, const int &ai1_pin, const int &ai2_pin)
   pwm = pwm_pin;
   ai1 = ai1_pin;
   ai2 = ai2_pin;
-
-  this->setupTopics();
 }
 
 void Pump::setup()
@@ -16,6 +14,7 @@ void Pump::setup()
   pinMode(pwm, OUTPUT);
   pinMode(ai1, OUTPUT);
   pinMode(ai2, OUTPUT);
+  this->setupTopics();
 }
 
 // TODO: use payload to toggle pump on and off
@@ -23,13 +22,13 @@ void Pump::setup()
 void Pump::setupTopics()
 {
   log_i("[Pump::setupTopics]: E_NOT_IMPLEMENTED");
-  // const std::string onTopic = "/esp-plant-sensor/" + this->id + "/pump/on";
-  // Comms::addTopic(onTopic, [this](std::string payload)
-  //                 { this->on(); });
+  const std::string onTopic = "/canopy/did002/pump/on";
+  Comms::addTopic(onTopic, [this](std::string payload)
+                  { this->on(255, Pump::PumpDirection::FORWARD); });
 
-  // const std::string offTopic = "/esp-plant-sensor/" + this->id + "/pump/off";
-  // Comms::addTopic(offTopic, [this](std::string payload)
-  //                 { this->off(); });
+  const std::string offTopic = "/canopy/did002/pump/off";
+  Comms::addTopic(offTopic, [this](std::string payload)
+                  { this->off(); });
 }
 
 void Pump::dir(Pump::PumpDirection _dir)

@@ -19,7 +19,6 @@ public:
 
 private:
   void setupTopics();
-  std::string id;
   int pwm;
   int ai1;
   int ai2;

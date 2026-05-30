@@ -25,12 +25,8 @@ void Comms::setupMqtt()
   mqttClient.setMqttClientName("ESP32_Client_dev_plant_sensor");
 
   mqttClient.enableLastWillMessage("lwt", "I am going offline");
-  mqttClient.setKeepAlive(30);
-  mqttClient.setOnMessageCallback(
-      [](const std::string &topic, const std::string &payload)
-      {
-        log_i("Global callback %s: %s", topic.c_str(), payload.c_str());
-      });
+  mqttClient.setKeepAlive(15);
+  mqttClient.setAutoReconnect(true);
 
   mqttClient.loopStart(); // Non-blocking!
 }
@@ -68,6 +64,7 @@ void onMqttConnect(esp_mqtt_client_handle_t client)
           Comms::topics[i].id,
           [i](const std::string &payload)
           {
+            log_d("\n[Comms::MQTT: subscription on %s heard %s", topics[i].id, payload.c_str());
             Comms::topics[i].handler(payload);
           });
     }

@@ -16,11 +16,29 @@ SoilMoistureSensor sensors[3] = {SoilMoistureSensor(32, "001"), SoilMoistureSens
 Pump fertPump(19, 21, 18);
 int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// STRUCTS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct ProgramInfo
 {
   std::string version;
   int isDevelopment;
 } pinfo = ProgramInfo{"v0.0.02", 1};
+
+// TODO: hookup to mqtt to listen for prefs updates
+struct Prefs
+{
+  int publishFrequencyMinutes;
+} pprefs = Prefs{15};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// FUNCTIONS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int shouldPublish(const int &loopCount, const float &minutes = 15.0, int skip = 0)
+{
+  return !skip && loopCount >= 1000 * 60 * minutes;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// MAIN
@@ -38,27 +56,21 @@ void setup()
   log_i("\nversion: %s", pinfo.version);
 }
 
-int shouldPublish(const int &loopCount, const float &minutes = 15.0)
-{
-  return loopCount >= 1000 * 60 * minutes;
-}
-
 void loop()
 {
-  // publish ever 15 minutes
-  if (shouldPublish(loopCount, 0.1))
+  if (shouldPublish(loopCount, pprefs.publishFrequencyMinutes, pinfo.isDevelopment))
   {
-    log_i("LOOP");
-    // // loop over every sensor and publish to its topic id
-    // for (int i = 0; i != numSensors; ++i)
-    // {
-    //   const int moisturePercentage = sensors[i].getMoisturePercentage();
-    //   char buffer[64];
-    //   snprintf(buffer, sizeof(buffer), "{\"soil-moisture\": %d}",
-    //            moisturePercentage);
-    //   sensors[i].publish(buffer);
-    // }
-    // loopCount = 0;
+    // loop over every sensor and publish to its topic id
+    for (int i = 0; i != numSensors; ++i)
+    {
+      const int moisturePercentage = sensors[i].getMoisturePercentage();
+      char buffer[64];
+      snprintf(buffer, sizeof(buffer), "{\"soil-moisture\": %d}",
+               moisturePercentage);
+      sensors[i].publish(buffer);
+    }
+    loopCount = 0;
   }
   ++loopCount;
+  delay(1);
 }
