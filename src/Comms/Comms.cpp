@@ -64,7 +64,7 @@ void onMqttConnect(esp_mqtt_client_handle_t client)
           Comms::topics[i].id,
           [i](const std::string &payload)
           {
-            log_d("\n[Comms::MQTT: subscription on %s heard %s", topics[i].id, payload.c_str());
+            log_i("\n[Comms::MQTT: subscription on %s heard %s", Comms::topics[i].id.c_str(), payload.c_str());
             Comms::topics[i].handler(payload);
           });
     }

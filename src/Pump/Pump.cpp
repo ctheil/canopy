@@ -1,6 +1,9 @@
 #include "Pump.h"
 #include "Arduino.h"
 #include <algorithm>
+#include <string>
+#include <sstream>
+#include <vector>
 
 Pump::Pump(const int &pwm_pin, const int &ai1_pin, const int &ai2_pin)
 {
@@ -22,21 +25,44 @@ void Pump::setup()
 void Pump::setupTopics()
 {
   log_i("[Pump::setupTopics]: E_NOT_IMPLEMENTED");
-  const std::string onTopic = "/canopy/did002/pump/on";
+  const std::string onTopic = "/canopy/did2/pump/on";
   Comms::addTopic(onTopic, [this](std::string payload)
-                  { this->on(255, Pump::PumpDirection::FORWARD); });
+                  { 
+                    auto dp = this->decodeOnPayload(payload);
+                    this->on(dp.speed, dp.direction); });
 
-  const std::string offTopic = "/canopy/did002/pump/off";
+  const std::string offTopic = "/canopy/did2/pump/off";
   Comms::addTopic(offTopic, [this](std::string payload)
                   { this->off(); });
 }
 
-void Pump::dir(Pump::PumpDirection _dir)
+OnPayload Pump::decodeOnPayload(const std::string &payload)
+{
+  std::string data = payload;
+  std::stringstream ss(data);
+  std::string token;
+  std::vector<std::string> split;
+
+  while (std::getline(ss, token, ','))
+  {
+    split.push_back(token);
+  }
+
+  int speed = std::stoi(split[0]);
+  PumpDirection dir = PumpDirection::FORWARD;
+  if (split[1] != "FORWARD")
+    dir = PumpDirection::REVERSE;
+  int duration = std::stoi(split[2]);
+
+  return OnPayload{speed, dir, duration};
+}
+
+void Pump::dir(PumpDirection _dir)
 {
   // default = forward
   int a = HIGH;
   int b = LOW;
-  if (_dir == Pump::PumpDirection::REVERSE)
+  if (_dir == PumpDirection::REVERSE)
   {
     a = LOW;
     b = HIGH;
@@ -45,7 +71,7 @@ void Pump::dir(Pump::PumpDirection _dir)
   digitalWrite(ai2, b);
 }
 
-void Pump::on(int speed = 255, Pump::PumpDirection _dir = Pump::PumpDirection::FORWARD)
+void Pump::on(int speed = 255, PumpDirection _dir = PumpDirection::FORWARD)
 {
   dir(_dir);
   int clamped = std::min(std::max(speed, 0), 255);
