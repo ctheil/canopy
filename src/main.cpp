@@ -9,9 +9,9 @@
 /// GLOBALS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int loopCount = 0;
-int constexpr numSensors = 1;
+int constexpr numSensors = 3;
 Comms c;
-SoilMoistureSensor sensors[numSensors] = {SoilMoistureSensor(32, "001", c)};
+SoilMoistureSensor sensors[numSensors] = {SoilMoistureSensor(32, "001", c), SoilMoistureSensor(33, "002", c), SoilMoistureSensor(25, "003", c)};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// MAIN

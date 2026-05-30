@@ -2,16 +2,19 @@
 #include "ESP32MQTTClient.h"
 #include <WiFi.h>
 #include <string>
+#include "../secrets.h"
 
 ESP32MQTTClient client;
 ESP32MQTTClient &Comms::mqttClient = client;
 
-void Comms::setupWifi() {
+void Comms::setupWifi()
+{
   WiFi.begin(ssid, password);
   WiFi.setHostname("c3Test");
 }
 
-void Comms::setupMqtt() {
+void Comms::setupMqtt()
+{
 
   mqttClient.enableDebuggingMessages();
 
