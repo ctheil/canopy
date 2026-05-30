@@ -6,11 +6,10 @@ class Pump
 {
 public:
   Pump(const std::string &plantId);
-  void on(std::string payload);
-  void off(std::string payload);
+  void on(const std::string &payload);
+  void off(const std::string &payload);
 
 private:
   void setupTopics();
   std::string id;
-  Comms *comms;
 };

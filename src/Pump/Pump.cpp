@@ -16,5 +16,5 @@ void Pump::setupTopics()
                   { this->off(payload); });
 }
 
-void Pump::on(std::string payload) {}
-void Pump::off(std::string payload) {}
+void Pump::on(const std::string &payload) {}
+void Pump::off(const std::string &payload) {}

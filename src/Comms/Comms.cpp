@@ -8,8 +8,8 @@
 ESP32MQTTClient client;
 ESP32MQTTClient &Comms::mqttClient = client;
 
-std::vector<Topic> t(0);
-std::vector<Topic> &Comms::topics = t;
+std::vector<Topic> _topics;
+std::vector<Topic> &Comms::topics = _topics;
 
 void Comms::setupWifi()
 {
