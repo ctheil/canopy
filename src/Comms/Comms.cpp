@@ -3,6 +3,7 @@
 #include <WiFi.h>
 #include <string>
 #include <functional>
+#include "../secrets.h"
 
 ESP32MQTTClient client;
 ESP32MQTTClient &Comms::mqttClient = client;
