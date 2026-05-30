@@ -23,10 +23,8 @@ void setup()
   log_i("setup, ESP.getSdkVersion(): ");
   log_i("%s", ESP.getSdkVersion());
 
-  log_i("\nInit comms");
-  Comms c;
-  c.setupWifi();
-  c.setupMqtt();
+  Comms::setupWifi();
+  Comms::setupMqtt();
 }
 
 void loop()

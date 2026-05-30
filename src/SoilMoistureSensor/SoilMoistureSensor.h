@@ -16,5 +16,4 @@ private:
   static int constexpr waterValue = 1150;
   static int constexpr airValue = 2500;
   std::string id;
-  Comms *comms;
 };

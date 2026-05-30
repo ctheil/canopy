@@ -6,7 +6,6 @@ SoilMoistureSensor::SoilMoistureSensor(int sensorPin, std::string plantId)
 {
   auto pin{sensorPin};
   auto id{plantId};
-  Comms *comms;
 }
 
 int SoilMoistureSensor::getMoisturePercentage()
@@ -22,5 +21,5 @@ int SoilMoistureSensor::getMoisturePercentage()
 
 void SoilMoistureSensor::publish(char buffer[64])
 {
-  comms->mqttClient.publish(Comms::getPublishTopic(id), buffer, 0, false);
+  Comms::mqttClient.publish(Comms::getPublishTopic(id), buffer, 0, false);
 }
