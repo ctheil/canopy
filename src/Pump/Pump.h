@@ -5,11 +5,22 @@
 class Pump
 {
 public:
-  Pump(const std::string &plantId);
-  void on(const std::string &payload);
-  void off(const std::string &payload);
+  Pump(const int &pwa_pin, const int &ai1_pin, const int &ai2_pin);
+  enum PumpDirection
+  {
+    FORWARD,
+    REVERSE
+  };
+  void on(int speed, Pump::PumpDirection dir);
+  void off();
+  void setup();
+
+  void dir(Pump::PumpDirection _dir);
 
 private:
   void setupTopics();
   std::string id;
+  int pwa;
+  int ai1;
+  int ai2;
 };
