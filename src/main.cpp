@@ -13,17 +13,19 @@
 int loopCount = 0;
 Comms c;
 SoilMoistureSensor sensors[3] = {SoilMoistureSensor(32, "001"), SoilMoistureSensor(33, "002"), SoilMoistureSensor(34, "003")};
-Pump fertPump(21, 18, 19);
+Pump fertPump(19, 21, 18);
 int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
 
 struct ProgramInfo
 {
   std::string version;
-} pinfo = ProgramInfo{"v0.0.02"};
+  int isDevelopment;
+} pinfo = ProgramInfo{"v0.0.02", 1};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// MAIN
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void setup()
 {
   Serial.begin(115200);
@@ -33,29 +35,30 @@ void setup()
 
   fertPump.setup();
 
-  log_i("version: %s", pinfo.version);
+  log_i("\nversion: %s", pinfo.version);
+}
+
+int shouldPublish(const int &loopCount, const float &minutes = 15.0)
+{
+  return loopCount >= 1000 * 60 * minutes;
 }
 
 void loop()
 {
   // publish ever 15 minutes
-  // if (loopCount >= 60 * 1)
-  if (loopCount > 10)
+  if (shouldPublish(loopCount, 0.1))
   {
-    // loop over every sensor and publish to its topic id
-    for (int i = 0; i != numSensors; ++i)
-    {
-      const int moisturePercentage = sensors[i].getMoisturePercentage();
-      char buffer[64];
-      snprintf(buffer, sizeof(buffer), "{\"soil-moisture\": %d}",
-               moisturePercentage);
-      sensors[i].publish(buffer);
-    }
-    loopCount = 0;
+    log_i("LOOP");
+    // // loop over every sensor and publish to its topic id
+    // for (int i = 0; i != numSensors; ++i)
+    // {
+    //   const int moisturePercentage = sensors[i].getMoisturePercentage();
+    //   char buffer[64];
+    //   snprintf(buffer, sizeof(buffer), "{\"soil-moisture\": %d}",
+    //            moisturePercentage);
+    //   sensors[i].publish(buffer);
+    // }
+    // loopCount = 0;
   }
   ++loopCount;
-  fertPump.on(255, Pump::PumpDirection::FORWARD);
-  delay(1000);
-  fertPump.off();
-  delay(1000);
 }

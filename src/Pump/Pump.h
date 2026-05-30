@@ -5,7 +5,7 @@
 class Pump
 {
 public:
-  Pump(const int &pwa_pin, const int &ai1_pin, const int &ai2_pin);
+  Pump(const int &pwm_pin, const int &ai1_pin, const int &ai2_pin);
   enum PumpDirection
   {
     FORWARD,
@@ -20,7 +20,7 @@ public:
 private:
   void setupTopics();
   std::string id;
-  int pwa;
+  int pwm;
   int ai1;
   int ai2;
 };

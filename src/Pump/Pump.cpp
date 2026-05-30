@@ -2,9 +2,9 @@
 #include "Arduino.h"
 #include <algorithm>
 
-Pump::Pump(const int &pwa_pin, const int &ai1_pin, const int &ai2_pin)
+Pump::Pump(const int &pwm_pin, const int &ai1_pin, const int &ai2_pin)
 {
-  pwa = pwa_pin;
+  pwm = pwm_pin;
   ai1 = ai1_pin;
   ai2 = ai2_pin;
 
@@ -13,7 +13,7 @@ Pump::Pump(const int &pwa_pin, const int &ai1_pin, const int &ai2_pin)
 
 void Pump::setup()
 {
-  pinMode(pwa, OUTPUT);
+  pinMode(pwm, OUTPUT);
   pinMode(ai1, OUTPUT);
   pinMode(ai2, OUTPUT);
 }
@@ -46,12 +46,13 @@ void Pump::dir(Pump::PumpDirection _dir)
   digitalWrite(ai2, b);
 }
 
-void Pump::on(int speed = 255, Pump::PumpDirection dir = Pump::PumpDirection::FORWARD)
+void Pump::on(int speed = 255, Pump::PumpDirection _dir = Pump::PumpDirection::FORWARD)
 {
+  dir(_dir);
   int clamped = std::min(std::max(speed, 0), 255);
-  analogWrite(pwa, clamped);
+  analogWrite(pwm, clamped);
 }
 void Pump::off()
 {
-  analogWrite(pwa, 0);
+  analogWrite(pwm, 0);
 }
