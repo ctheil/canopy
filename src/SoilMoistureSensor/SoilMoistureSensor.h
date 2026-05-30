@@ -7,9 +7,9 @@
 class SoilMoistureSensor
 {
 public:
-  SoilMoistureSensor(int sensorPin, std::string plantId);
+  SoilMoistureSensor(int sensorPin, const std::string &plantId);
   int getMoisturePercentage();
-  void publish(char buffer[64]);
+  void publish(char *buffer);
 
 private:
   int pin;

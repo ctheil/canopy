@@ -8,9 +8,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// GLOBALS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int loopCount = 0;
-int constexpr numSensors = 1;
-SoilMoistureSensor sensors[numSensors] = {SoilMoistureSensor(32, "001")};
+uint32_t loopCount = 0;
+SoilMoistureSensor sensors[] = {SoilMoistureSensor(32, "001")};
+int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// MAIN
@@ -18,10 +18,6 @@ SoilMoistureSensor sensors[numSensors] = {SoilMoistureSensor(32, "001")};
 void setup()
 {
   Serial.begin(115200);
-
-  log_i();
-  log_i("setup, ESP.getSdkVersion(): ");
-  log_i("%s", ESP.getSdkVersion());
 
   Comms::setupWifi();
   Comms::setupMqtt();
@@ -41,9 +37,8 @@ void loop()
       snprintf(buffer, sizeof(buffer), "{\"soil-moisture\": %d}",
                moisturePercentage);
       sensors[i].publish(buffer);
-
-      loopCount = 0;
     }
+    loopCount = 0;
   }
   ++loopCount;
   delay(1000);

@@ -5,7 +5,7 @@
 class Pump
 {
 public:
-  Pump(std::string plantId);
+  Pump(const std::string &plantId);
   void on(std::string payload);
   void off(std::string payload);
 

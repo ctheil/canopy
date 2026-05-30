@@ -7,12 +7,13 @@
 
 ESP32MQTTClient client;
 ESP32MQTTClient &Comms::mqttClient = client;
-std::vector<Topic> topics;
+
+std::vector<Topic> t(0);
+std::vector<Topic> &Comms::topics = t;
 
 void Comms::setupWifi()
 {
   WiFi.begin(ssid, password);
-  WiFi.setHostname("c3Test");
 }
 
 void Comms::setupMqtt()
@@ -34,12 +35,12 @@ void Comms::setupMqtt()
   mqttClient.loopStart(); // Non-blocking!
 }
 
-std::string Comms::getSubscribeTopic(std::string plantId)
+std::string Comms::getSubscribeTopic(const std::string &plantId)
 {
   return "/esp-plant-sensor/" + plantId + "/pump";
 }
 
-std::string Comms::getPublishTopic(std::string plantId)
+std::string Comms::getPublishTopic(const std::string &plantId)
 {
   return "/esp-plant-sensor/" + plantId + "/moisture";
 }
@@ -48,9 +49,9 @@ void Comms::addTopic(std::string id, std::function<void(std::string)> handler)
 {
   topics.push_back(Topic{id, handler});
   // TODO: what if not `isMyTurn`?
-  Comms::mqttClient.subscribe(
+  mqttClient.subscribe(
       id,
-      [&handler](const std::string &payload)
+      [handler](const std::string &payload)
       {
         handler(payload.c_str());
       });
@@ -61,13 +62,13 @@ void onMqttConnect(esp_mqtt_client_handle_t client)
   if (Comms::mqttClient.isMyTurn(client))
   {
     // loop over topics, subscribe and setup topic handler
-    for (int i = 0; i != topics.size(); ++i)
+    for (int i = 0; i != Comms::topics.size(); ++i)
     {
       Comms::mqttClient.subscribe(
-          topics[i].id,
-          [&i](const std::string &payload)
+          Comms::topics[i].id,
+          [i](const std::string &payload)
           {
-            topics[i].handler(payload);
+            Comms::topics[i].handler(payload);
           });
     }
   }
