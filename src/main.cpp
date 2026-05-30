@@ -47,5 +47,8 @@ void loop()
     loopCount = 0;
   }
   ++loopCount;
+  fertPump.on(255, Pump::PumpDirection::FORWARD);
+  delay(1000);
+  fertPump.off();
   delay(1000);
 }

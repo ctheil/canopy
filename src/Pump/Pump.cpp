@@ -46,7 +46,7 @@ void Pump::dir(Pump::PumpDirection _dir)
   digitalWrite(ai2, b);
 }
 
-void Pump::on(int speed, Pump::PumpDirection dir = Pump::PumpDirection::FORWARD)
+void Pump::on(int speed = 255, Pump::PumpDirection dir = Pump::PumpDirection::FORWARD)
 {
   int clamped = std::min(std::max(speed, 0), 255);
   analogWrite(pwa, clamped);
