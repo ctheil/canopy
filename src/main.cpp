@@ -8,8 +8,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// GLOBALS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-uint32_t loopCount = 0;
-SoilMoistureSensor sensors[] = {SoilMoistureSensor(32, "001")};
+int loopCount = 0;
+Comms c;
+SoilMoistureSensor sensors[3] = {SoilMoistureSensor(32, "001"), SoilMoistureSensor(33, "002"), SoilMoistureSensor(34, "003")};
 int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,12 +27,12 @@ void setup()
 void loop()
 {
   // publish ever 15 minutes
-  if (loopCount >= 60 * 15)
+  // if (loopCount >= 60 * 1)
+  if (loopCount > 10)
   {
     // loop over every sensor and publish to its topic id
     for (int i = 0; i != numSensors; ++i)
     {
-
       const int moisturePercentage = sensors[i].getMoisturePercentage();
       char buffer[64];
       snprintf(buffer, sizeof(buffer), "{\"soil-moisture\": %d}",
