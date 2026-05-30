@@ -10,11 +10,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// GLOBALS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int loopCount = 0;
-Comms c;
-SoilMoistureSensor sensors[3] = {SoilMoistureSensor(32, "001"), SoilMoistureSensor(33, "002"), SoilMoistureSensor(34, "003")};
-Pump fertPump(19, 21, 18);
+uint32_t loopCount = 0;
+
+SoilMoistureSensor sensors[] = {SoilMoistureSensor(32, "001"), SoilMoistureSensor(33, "002"), SoilMoistureSensor(34, "003")};
 int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
+
+Pump fertPump(19, 21, 18); // PWM AI1 AI2
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// STRUCTS
@@ -35,7 +36,7 @@ struct Prefs
 /// FUNCTIONS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int shouldPublish(const int &loopCount, const float &minutes = 15.0, int skip = 0)
+int shouldPublish(int loopCount, const float &minutes = 15.0, int skip = 0)
 {
   return !skip && loopCount >= 1000 * 60 * minutes;
 }
@@ -53,7 +54,7 @@ void setup()
 
   fertPump.setup();
 
-  log_i("\nversion: %s", pinfo.version);
+  log_i("\nversion: %s", pinfo.version.c_str());
 }
 
 void loop()

@@ -21,17 +21,16 @@ struct OnPayload
 class Pump
 {
 public:
-  Pump(const int &pwm_pin, const int &ai1_pin, const int &ai2_pin);
-  void on(int speed, PumpDirection dir);
+  Pump(int pwm_pin, int ai1_pin, int ai2_pin);
+  void on(int speed = 255, PumpDirection dir = PumpDirection::FORWARD);
   void off();
   void setup();
-
-  void dir(PumpDirection _dir);
 
 private:
   void setupTopics();
   int pwm;
   int ai1;
   int ai2;
+  void dir(PumpDirection _dir);
   OnPayload decodeOnPayload(const std::string &payload);
 };

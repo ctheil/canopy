@@ -5,7 +5,7 @@
 #include <sstream>
 #include <vector>
 
-Pump::Pump(const int &pwm_pin, const int &ai1_pin, const int &ai2_pin)
+Pump::Pump(int pwm_pin, int ai1_pin, int ai2_pin)
 {
   pwm = pwm_pin;
   ai1 = ai1_pin;
@@ -48,6 +48,10 @@ OnPayload Pump::decodeOnPayload(const std::string &payload)
     split.push_back(token);
   }
 
+  if (split.size() != 3)
+    return OnPayload{255, PumpDirection::FORWARD, 1000};
+
+  // TODO: can throw
   int speed = std::stoi(split[0]);
   PumpDirection dir = PumpDirection::FORWARD;
   if (split[1] != "FORWARD")
@@ -71,7 +75,7 @@ void Pump::dir(PumpDirection _dir)
   digitalWrite(ai2, b);
 }
 
-void Pump::on(int speed = 255, PumpDirection _dir = PumpDirection::FORWARD)
+void Pump::on(int speed, PumpDirection _dir)
 {
   dir(_dir);
   int clamped = std::min(std::max(speed, 0), 255);
