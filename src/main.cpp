@@ -16,6 +16,11 @@ SoilMoistureSensor sensors[3] = {SoilMoistureSensor(32, "001"), SoilMoistureSens
 Pump fertPump(21, 18, 19);
 int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
 
+struct ProgramInfo
+{
+  std::string version;
+} pinfo = ProgramInfo{"v0.0.02"};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// MAIN
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +32,8 @@ void setup()
   Comms::setupMqtt();
 
   fertPump.setup();
+
+  log_i("version: %s", pinfo.version);
 }
 
 void loop()
