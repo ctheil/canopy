@@ -2,8 +2,11 @@
 #include "Arduino.h"
 #include <string>
 
-SoilMoistureSensor::SoilMoistureSensor(int sensorPin, std::string plantId, Comms &c)
-    : pin{sensorPin}, id{plantId}, comms{c} {}
+SoilMoistureSensor::SoilMoistureSensor(int sensorPin, const std::string &plantId)
+{
+  pin = sensorPin;
+  id = plantId;
+}
 
 int SoilMoistureSensor::getMoisturePercentage()
 {
@@ -16,7 +19,7 @@ int SoilMoistureSensor::getMoisturePercentage()
   return soilMoisturePercent;
 }
 
-void SoilMoistureSensor::publish(char buffer[64])
+void SoilMoistureSensor::publish(char *buffer)
 {
-  comms.mqttClient.publish(Comms::getPublishTopic(id), buffer, 0, false);
+  Comms::mqttClient.publish(Comms::getPublishTopic(id), buffer, 0, false);
 }

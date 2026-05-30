@@ -8,6 +8,8 @@
 - [ ] add long term memory
 - [ ] Add more sensors
 - [ ] Make configurable via mqtt (read from topics)
+  - [ ] preferences/setup
+
 - [ ] fix:
 
 ```

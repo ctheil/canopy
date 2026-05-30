@@ -1,39 +1,65 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// INCLUDES
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #include "./Comms/Comms.h"
 #include "./SoilMoistureSensor/SoilMoistureSensor.h"
+#include "./Pump/Pump.h"
 #include "Arduino.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// GLOBALS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int loopCount = 0;
-int constexpr numSensors = 3;
-Comms c;
-SoilMoistureSensor sensors[numSensors] = {SoilMoistureSensor(32, "001", c), SoilMoistureSensor(33, "002", c), SoilMoistureSensor(34, "003", c)};
+uint32_t loopCount = 0;
+
+SoilMoistureSensor sensors[] = {SoilMoistureSensor(32, "001"), SoilMoistureSensor(33, "002"), SoilMoistureSensor(34, "003")};
+int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
+
+Pump fertPump(19, 21, 18); // PWM AI1 AI2
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// STRUCTS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+struct ProgramInfo
+{
+  std::string version;
+  int isDevelopment;
+} pinfo = ProgramInfo{"v0.0.02", 1};
+
+// TODO: hookup to mqtt to listen for prefs updates
+struct Prefs
+{
+  int publishFrequencyMinutes;
+} pprefs = Prefs{15};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// FUNCTIONS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int shouldPublish(int loopCount, const float &minutes = 15.0, int skip = 0)
+{
+  return !skip && loopCount >= 1000 * 60 * minutes;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// MAIN
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void setup()
 {
   Serial.begin(115200);
 
-  log_i();
-  log_i("setup, ESP.getSdkVersion(): ");
-  log_i("%s", ESP.getSdkVersion());
+  Comms::setupWifi();
+  Comms::setupMqtt();
 
-  log_i("\nInit comms");
-  c.setupWifi();
-  c.setupMqtt();
+  fertPump.setup();
+
+  log_i("\nversion: %s", pinfo.version.c_str());
 }
 
 void loop()
 {
-  // publish ever 15 minutes
-  // if (loopCount >= 60 * 1)
-  if (loopCount > 10)
+  if (shouldPublish(loopCount, pprefs.publishFrequencyMinutes, pinfo.isDevelopment))
   {
     // loop over every sensor and publish to its topic id
     for (int i = 0; i != numSensors; ++i)
@@ -47,5 +73,5 @@ void loop()
     loopCount = 0;
   }
   ++loopCount;
-  delay(1000);
+  delay(1);
 }
