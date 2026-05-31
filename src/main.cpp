@@ -5,7 +5,6 @@
 #include "./Prefs/Prefs.h"
 #include "./Comms/Comms.h"
 #include "./SoilMoistureSensor/SoilMoistureSensor.h"
-#include "./Pump/Pump.h"
 #include "Arduino.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,8 +15,6 @@ uint32_t loopCount = 0;
 SoilMoistureSensor sensors[] = {SoilMoistureSensor(32, "001"), SoilMoistureSensor(33, "002"), SoilMoistureSensor(34, "003")};
 int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
 
-// Pump fertPump(19, 21, 18); // PWM AI1 AI2
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// STRUCTS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +22,7 @@ struct ProgramInfo
 {
   std::string version;
   int isDevelopment;
-} pinfo = ProgramInfo{"v0.0.03", 1};
+} pinfo = ProgramInfo{"v0.0.03", 0};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
@@ -46,8 +43,6 @@ void setup()
 
   Prefs::setup();
   Comms::setup();
-
-  // fertPump.setup();
 
   log_i("\nversion: %s DEV: %d", pinfo.version.c_str(), pinfo.isDevelopment);
 }
