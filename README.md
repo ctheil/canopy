@@ -2,13 +2,15 @@
 
 ## TODO
 
-- [ ] Read battery into sensor
+- [x] Read battery into sensor
 - [ ] Calculate solar input
-- [ ] Hookup pumps
-- [ ] add long term memory
-- [ ] Add more sensors
-- [ ] Make configurable via mqtt (read from topics)
-  - [ ] preferences/setup
+- [x] Hookup pumps
+- [x] add long term memory
+- [x] Add more sensors
+- [x] Make configurable via mqtt (read from topics)
+  - [x] preferences/setup
+- [ ] move away from arduino
+- [ ] make schematics for the hardware
 
 ...
 
