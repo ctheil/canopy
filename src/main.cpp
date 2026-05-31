@@ -28,7 +28,7 @@ struct ProgramInfo
 /// FUNCTIONS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int shouldPublish(uint32_t loopCount, const float &minutes = 15.0, int skip = 0)
+int shouldPublish(uint32_t loopCount, const float &minutes = Prefs::publishFrequencyMinutes, int skip = pinfo.isDevelopment)
 {
   return !skip && loopCount >= 1000 * 60 * minutes;
 }
@@ -49,7 +49,7 @@ void setup()
 
 void loop()
 {
-  if (shouldPublish(loopCount, Prefs::publishFrequencyMinutes, pinfo.isDevelopment))
+  if (shouldPublish(loopCount))
   {
     // loop over every sensor and publish to its topic id
     for (int i = 0; i != numSensors; ++i)
