@@ -5,6 +5,8 @@
 #include <string>
 #include <functional>
 #include "../secrets.h"
+#include <Ticker.h>
+#include "../Prefs/Prefs.h"
 
 struct Topic
 {
@@ -16,11 +18,10 @@ class Comms
 {
 public:
   static void setup();
-  static std::string getSubscribeTopic(const std::string &plantId);
-  static std::string getPublishTopic(const std::string &plantId);
   static AsyncMqttClient &mqttClient;
   static void addTopic(std::string id, std::function<void(std::string)> handler, int8_t qos = 0);
   static std::vector<Topic> &topics;
+  static std::string endpoint(const std::string &_endpoint);
 
 private:
   static void onMqttConnect(bool sessionPresent);
@@ -28,4 +29,5 @@ private:
   static void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
   static void connectToMqtt();
   static void setupMqtt();
+  static void onMqttPublish(uint16_t packedId);
 };

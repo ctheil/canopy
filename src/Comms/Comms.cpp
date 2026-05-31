@@ -5,6 +5,7 @@
 #include <functional>
 #include "../secrets.h"
 #include <Ticker.h>
+#include "../Prefs/Prefs.h"
 
 AsyncMqttClient client;
 AsyncMqttClient &Comms::mqttClient = client;
@@ -31,6 +32,7 @@ void Comms::setupMqtt()
   mqttClient.onConnect(onMqttConnect);
   mqttClient.onDisconnect(onMqttDisconnect);
   mqttClient.onMessage(onMqttMessage);
+  mqttClient.onPublish(onMqttPublish);
 
   mqttClient.setCredentials("dev_plant_sensor_001", "dev_plant_sensor_001");
   mqttClient.setServer(IPAddress(192, 168, 0, 57), 1883);
@@ -40,16 +42,6 @@ void Comms::setupMqtt()
   mqttClient.setWill("lwt", 0, false, "I am going offline");
 
   Comms::connectToMqtt();
-}
-
-std::string Comms::getSubscribeTopic(const std::string &plantId)
-{
-  return "/esp-plant-sensor/" + plantId + "/pump";
-}
-
-std::string Comms::getPublishTopic(const std::string &plantId)
-{
-  return "/esp-plant-sensor/" + plantId + "/moisture";
 }
 
 void Comms::addTopic(std::string id, std::function<void(std::string)> handler, int8_t qos)
@@ -103,4 +95,14 @@ void Comms::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProp
 
   log_i("\n[Comms::onMqttMessage]: %s heard: %s", topic, payload);
   sub->handler(std::string(payload, len));
+}
+
+void Comms::onMqttPublish(uint16_t packetId)
+{
+  log_i("\n[Comms::onMqttPublish]: sent packetId %d", packetId);
+}
+
+std::string Comms::endpoint(const std::string &_endpoint)
+{
+  return "/canopy/" + Prefs::deviceId + _endpoint;
 }

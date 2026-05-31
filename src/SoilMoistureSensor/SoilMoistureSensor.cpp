@@ -21,6 +21,5 @@ int SoilMoistureSensor::getMoisturePercentage()
 
 void SoilMoistureSensor::publish(char *buffer)
 {
-  log_i("publishing: %s, %s", Comms::getPublishTopic(id).c_str(), buffer);
-  Comms::mqttClient.publish(Comms::getPublishTopic(id).c_str(), 1, false, buffer);
+  Comms::mqttClient.publish(Comms::endpoint("/" + id + "/moisture").c_str(), 1, false, buffer);
 }
