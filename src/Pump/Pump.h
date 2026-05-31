@@ -5,6 +5,8 @@
 #include <sstream>
 #include <vector>
 
+// PUMP with 4 5gph leads takes ~30mins to pump 1gal
+
 enum PumpDirection
 {
   FORWARD,
