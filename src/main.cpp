@@ -2,6 +2,7 @@
 /// INCLUDES
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include "./Prefs/Prefs.h"
 #include "./Comms/Comms.h"
 #include "./SoilMoistureSensor/SoilMoistureSensor.h"
 #include "./Pump/Pump.h"
@@ -12,7 +13,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 uint32_t loopCount = 0;
 
-SoilMoistureSensor sensors[] = {SoilMoistureSensor(32, "D001"), SoilMoistureSensor(33, "D002"), SoilMoistureSensor(34, "D003")};
+SoilMoistureSensor sensors[] = {SoilMoistureSensor(32, "001"), SoilMoistureSensor(33, "002"), SoilMoistureSensor(34, "003")};
 int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
 
 // Pump fertPump(19, 21, 18); // PWM AI1 AI2
@@ -24,19 +25,13 @@ struct ProgramInfo
 {
   std::string version;
   int isDevelopment;
-} pinfo = ProgramInfo{"v0.0.02", 0};
-
-// TODO: hookup to mqtt to listen for prefs updates
-struct Prefs
-{
-  int publishFrequencyMinutes;
-} pprefs = Prefs{15};
+} pinfo = ProgramInfo{"v0.0.03", 1};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int shouldPublish(int loopCount, const float &minutes = 15.0, int skip = 0)
+int shouldPublish(uint32_t loopCount, const float &minutes = 15.0, int skip = 0)
 {
   return !skip && loopCount >= 1000 * 60 * minutes;
 }
@@ -49,16 +44,17 @@ void setup()
 {
   Serial.begin(115200);
 
+  Prefs::setup();
   Comms::setup();
 
   // fertPump.setup();
 
-  log_i("\nversion: %s", pinfo.version.c_str());
+  log_i("\nversion: %s DEV: %d", pinfo.version.c_str(), pinfo.isDevelopment);
 }
 
 void loop()
 {
-  if (shouldPublish(loopCount, pprefs.publishFrequencyMinutes, pinfo.isDevelopment))
+  if (shouldPublish(loopCount, Prefs::publishFrequencyMinutes, pinfo.isDevelopment))
   {
     // loop over every sensor and publish to its topic id
     for (int i = 0; i != numSensors; ++i)
