@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ESP32MQTTClient.h"
+#include "AsyncMqttClient.h"
 #include <WiFi.h>
 #include <string>
 #include <functional>
@@ -10,15 +10,22 @@ struct Topic
 {
   std::string id;
   std::function<void(std::string)> handler;
+  int8_t qos;
 };
 class Comms
 {
 public:
-  static void setupWifi();
-  static void setupMqtt();
+  static void setup();
   static std::string getSubscribeTopic(const std::string &plantId);
   static std::string getPublishTopic(const std::string &plantId);
-  static ESP32MQTTClient &mqttClient;
-  static void addTopic(std::string id, std::function<void(std::string)> handler);
+  static AsyncMqttClient &mqttClient;
+  static void addTopic(std::string id, std::function<void(std::string)> handler, int8_t qos = 0);
   static std::vector<Topic> &topics;
+
+private:
+  static void onMqttConnect(bool sessionPresent);
+  static void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
+  static void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
+  static void connectToMqtt();
+  static void setupMqtt();
 };

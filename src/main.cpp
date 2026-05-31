@@ -12,10 +12,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 uint32_t loopCount = 0;
 
-SoilMoistureSensor sensors[] = {SoilMoistureSensor(32, "001"), SoilMoistureSensor(33, "002"), SoilMoistureSensor(34, "003")};
+SoilMoistureSensor sensors[] = {SoilMoistureSensor(32, "D001"), SoilMoistureSensor(33, "D002"), SoilMoistureSensor(34, "D003")};
 int constexpr numSensors = sizeof(sensors) / sizeof(sensors[0]);
 
-Pump fertPump(19, 21, 18); // PWM AI1 AI2
+// Pump fertPump(19, 21, 18); // PWM AI1 AI2
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// STRUCTS
@@ -24,7 +24,7 @@ struct ProgramInfo
 {
   std::string version;
   int isDevelopment;
-} pinfo = ProgramInfo{"v0.0.02", 1};
+} pinfo = ProgramInfo{"v0.0.02", 0};
 
 // TODO: hookup to mqtt to listen for prefs updates
 struct Prefs
@@ -49,10 +49,9 @@ void setup()
 {
   Serial.begin(115200);
 
-  Comms::setupWifi();
-  Comms::setupMqtt();
+  Comms::setup();
 
-  fertPump.setup();
+  // fertPump.setup();
 
   log_i("\nversion: %s", pinfo.version.c_str());
 }
