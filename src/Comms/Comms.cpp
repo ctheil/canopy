@@ -98,8 +98,5 @@ void Comms::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProp
 
 std::string Comms::endpoint(const std::string &_endpoint)
 {
-  char prefix;
-  if (_endpoint[0] != '/')
-    prefix = '/';
-  return "/canopy/" + Prefs::deviceId + prefix + _endpoint;
+  return "/canopy/" + Prefs::deviceId + _endpoint;
 }

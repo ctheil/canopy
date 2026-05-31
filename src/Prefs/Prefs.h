@@ -10,4 +10,5 @@ public:
   static void setup();
   static float publishFrequencyMinutes;
   static std::string deviceId;
+  static void publishState();
 };
