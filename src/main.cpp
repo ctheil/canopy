@@ -25,7 +25,7 @@ struct ProgramInfo
 {
   std::string version;
   int isDevelopment;
-} pinfo = ProgramInfo{"v0.0.04", 0};
+} pinfo = ProgramInfo{"v0.0.05", 0};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
