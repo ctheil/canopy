@@ -5,6 +5,7 @@
 #include <functional>
 #include "../secrets.h"
 #include <Ticker.h>
+#include "../Prefs/Prefs.h"
 
 AsyncMqttClient client;
 AsyncMqttClient &Comms::mqttClient = client;
@@ -40,16 +41,6 @@ void Comms::setupMqtt()
   mqttClient.setWill("lwt", 0, false, "I am going offline");
 
   Comms::connectToMqtt();
-}
-
-std::string Comms::getSubscribeTopic(const std::string &plantId)
-{
-  return "/esp-plant-sensor/" + plantId + "/pump";
-}
-
-std::string Comms::getPublishTopic(const std::string &plantId)
-{
-  return "/esp-plant-sensor/" + plantId + "/moisture";
 }
 
 void Comms::addTopic(std::string id, std::function<void(std::string)> handler, int8_t qos)
@@ -103,4 +94,12 @@ void Comms::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProp
 
   log_i("\n[Comms::onMqttMessage]: %s heard: %s", topic, payload);
   sub->handler(std::string(payload, len));
+}
+
+std::string Comms::endpoint(const std::string &_endpoint)
+{
+  char prefix;
+  if (_endpoint[0] != '/')
+    prefix = '/';
+  return "/canopy/" + Prefs::deviceId + prefix + _endpoint;
 }

@@ -25,14 +25,12 @@ void Pump::setup()
 void Pump::setupTopics()
 {
   log_i("[Pump::setupTopics]: E_NOT_IMPLEMENTED");
-  const std::string onTopic = "/canopy/did2/pump/on";
-  Comms::addTopic(onTopic, [this](std::string payload)
+  Comms::addTopic(Comms::endpoint("/pump/on"), [this](std::string payload)
                   { 
                     auto dp = this->decodeOnPayload(payload);
                     this->on(dp.speed, dp.direction); });
 
-  const std::string offTopic = "/canopy/did2/pump/off";
-  Comms::addTopic(offTopic, [this](std::string payload)
+  Comms::addTopic(Comms::endpoint("/pump/off"), [this](std::string payload)
                   { this->off(); });
 }
 
