@@ -32,6 +32,7 @@ void Comms::setupMqtt()
   mqttClient.onConnect(onMqttConnect);
   mqttClient.onDisconnect(onMqttDisconnect);
   mqttClient.onMessage(onMqttMessage);
+  mqttClient.onPublish(onMqttPublish);
 
   mqttClient.setCredentials("dev_plant_sensor_001", "dev_plant_sensor_001");
   mqttClient.setServer(IPAddress(192, 168, 0, 57), 1883);
@@ -94,6 +95,11 @@ void Comms::onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProp
 
   log_i("\n[Comms::onMqttMessage]: %s heard: %s", topic, payload);
   sub->handler(std::string(payload, len));
+}
+
+void Comms::onMqttPublish(uint16_t packetId)
+{
+  log_i("\n[Comms::onMqttPublish]: sent packetId %d", packetId);
 }
 
 std::string Comms::endpoint(const std::string &_endpoint)

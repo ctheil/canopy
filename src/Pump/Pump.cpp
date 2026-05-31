@@ -36,6 +36,7 @@ void Pump::setupTopics()
 
 OnPayload Pump::decodeOnPayload(const std::string &payload)
 {
+  auto def = OnPayload{255, PumpDirection::FORWARD, 1000};
   std::string data = payload;
   std::stringstream ss(data);
   std::string token;
@@ -47,9 +48,10 @@ OnPayload Pump::decodeOnPayload(const std::string &payload)
   }
 
   if (split.size() != 3)
-    return OnPayload{255, PumpDirection::FORWARD, 1000};
+    return def;
 
   // TODO: can throw
+
   int speed = std::stoi(split[0]);
   PumpDirection dir = PumpDirection::FORWARD;
   if (split[1] != "FORWARD")

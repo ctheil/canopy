@@ -29,4 +29,5 @@ private:
   static void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
   static void connectToMqtt();
   static void setupMqtt();
+  static void onMqttPublish(uint16_t packedId);
 };
